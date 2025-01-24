@@ -17,7 +17,7 @@ export default function ChatView() {
           lastSystemMessageText={lastSystemMessageText || ""}
         />
       ) : (
-        <ExamplesView />
+        <ExamplesView onPressItem={chatAsync} />
       )}
 
       <InputForm onSubmit={chatAsync} />
