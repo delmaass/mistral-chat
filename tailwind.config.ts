@@ -35,5 +35,5 @@ export default {
       semibold: "600",
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 } satisfies Config;

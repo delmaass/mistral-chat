@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Icon from "../Icon";
 import { Message } from "@/types/message";
+import Markdown from "react-markdown";
 
 type Props = Pick<Message, "text"> & {
   className?: string;
@@ -18,12 +19,12 @@ export default function SystemMessageBubble({
         <Icon size={24} />
       </div>
 
-      <p className="font-medium pt-3 flex-1">
-        {text}
+      <div className="font-medium pt-3 flex-1">
+        <Markdown className="prose max-w-none">{text}</Markdown>
         {isStreaming && (
           <span className="bg-onbase-primary size-4 rounded-full align-middle -translate-y-[0.5px] inline-block" />
         )}
-      </p>
+      </div>
     </div>
   );
 }
