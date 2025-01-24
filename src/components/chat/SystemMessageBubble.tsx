@@ -15,7 +15,7 @@ export default function SystemMessageBubble({
 }: Props) {
   return (
     <div className={clsx("flex flex-row gap-4", className)}>
-      <div className="rounded-full border border-brand-orange border-opacity-20 size-12 flex items-center justify-center">
+      <div className="rounded-full border border-brand-orange border-opacity-20 size-12 flex items-center justify-center flex-shrink-0">
         <Icon size={24} />
       </div>
 
