@@ -5,6 +5,8 @@
 
 <br />
 
+![Interface UI](screenshot_1.png)
+
 > A simple chat interface for Mistral AI's language models. Built with Next.js, Tailwind CSS, and the official Mistral AI TypeScript SDK.
 
 _Disclaimer: This project is not production-ready. It is for local use only._
@@ -41,4 +43,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - **Join Mistral AI** - Indeed
 - **Authentication** - Add user authentication and API key management
-- **Context & Server Session** - Persist conversations and settings across sessions
+- **Context & Server Session** - Persist context with server-side session
+- **Conversations** - Persist conversations and switch between them
