@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import Icon from "../Icon";
-import { Message } from "./MessageListItem";
+import { Message } from "@/types/message";
 
 type Props = Pick<Message, "text"> & { className?: string };
 

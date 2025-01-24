@@ -1,6 +1,5 @@
-import MessageListItem, {
-  type Message,
-} from "@/components/chat/MessageListItem";
+import MessageListItem from "@/components/chat/MessageListItem";
+import { Message } from "@/types/message";
 
 type Props = {
   messages: Message[];

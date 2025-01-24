@@ -1,14 +1,7 @@
 import clsx from "clsx";
 import SystemMessageBubble from "./SystemMessageBubble";
 import UserMessageBubble from "./UserMessageBubble";
-
-type MessageRole = "user" | "system";
-
-export type Message = {
-  id: number;
-  role: MessageRole;
-  text: string;
-};
+import { Message } from "@/types/message";
 
 type Props = Omit<Message, "id">;
 
