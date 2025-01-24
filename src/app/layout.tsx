@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${interFont.variable} ${interFont.variable} antialiased bg-surface-primary`}
+        className={`${interFont.variable} ${interFont.variable} antialiased bg-surface-primary max-h-screen overflow-hidden`}
       >
         {children}
       </body>
