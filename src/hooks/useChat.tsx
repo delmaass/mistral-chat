@@ -53,18 +53,24 @@ export default function useChat(): UseChatReturnType {
       const reader = streamingResponse.body.getReader();
       const decoder = new TextDecoder("utf-8");
 
-      let done = false;
-      let buffer = "";
+      let accumulatedText = "";
 
-      while (!done) {
-        const { value, done: readerDone } = await reader.read();
-        done = readerDone;
+      while (true) {
+        const { value, done } = await reader.read();
+
+        if (done) break;
 
         if (value) {
-          buffer += decoder.decode(value, { stream: true });
-          setLastSystemMessageText((prev) => (prev || "") + buffer);
-          buffer = "";
+          const chunk = decoder.decode(value, { stream: true });
+          accumulatedText += chunk;
+          setLastSystemMessageText(accumulatedText);
         }
+      }
+
+      const final = decoder.decode();
+      if (final) {
+        accumulatedText += final;
+        setLastSystemMessageText(accumulatedText);
       }
     } catch (error) {
       console.error("An error occured while streaming:", error);
