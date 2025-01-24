@@ -1,9 +1,36 @@
 "use server";
 
 import { Mistral } from "@mistralai/mistralai";
+import {
+  AssistantMessage,
+  UserMessage,
+} from "@mistralai/mistralai/models/components";
 import * as z from "zod";
 
-const schema = z.object({ prompt: z.string().nonempty() }).required();
+type Message = {
+  role: "user" | "system";
+  text: string;
+};
+
+const mapMessageToMistral = (
+  message: Message,
+):
+  | (UserMessage & { role: "user" })
+  | (AssistantMessage & { role: "assistant" }) => ({
+  role: message.role === "system" ? ("assistant" as const) : message.role,
+  content: message.text,
+});
+
+const messageSchema = z
+  .object({ role: z.enum(["user", "system"]), text: z.string().nonempty() })
+  .required();
+
+const schema = z
+  .object({
+    messages: z.array(messageSchema).optional(),
+    prompt: z.string().nonempty(),
+  })
+  .required();
 
 export async function POST(request: Request) {
   const requestBody = await request.json();
@@ -30,7 +57,13 @@ export async function POST(request: Request) {
       try {
         const result = await client.chat.stream({
           model: "mistral-small-latest",
-          messages: [{ role: "user", content: validatedFields.data.prompt }],
+          messages: [
+            ...(validatedFields.data.messages &&
+            validatedFields.data.messages.length
+              ? validatedFields.data.messages.map(mapMessageToMistral)
+              : []),
+            { role: "user", content: validatedFields.data.prompt },
+          ],
         });
 
         for await (const chunk of result) {

@@ -14,34 +14,40 @@ export default function useChat(): UseChatReturnType {
   const [lastSystemMessageText, setLastSystemMessageText] = useState<string>();
 
   const chatAsync = async (prompt: string): Promise<void> => {
-    setMessages((prev) => {
-      const lastMessageId = prev.length > 0 ? prev[prev.length - 1].id : 0;
+    const lastMessageId =
+      messages.length > 0 ? messages[messages.length - 1].id : 0;
 
-      return [
-        ...prev,
-        ...(lastSystemMessageText !== undefined
-          ? [
-              {
-                id: lastMessageId + 1,
-                role: "system" as const,
-                text: lastSystemMessageText,
-              },
-            ]
-          : []),
-        {
-          id: lastMessageId + (lastSystemMessageText !== undefined ? 2 : 1),
-          role: "user",
-          text: prompt,
-        },
-      ];
-    });
+    const messagesPlusLastSystemMessage = [
+      ...messages,
+      ...(lastSystemMessageText !== undefined
+        ? [
+            {
+              id: lastMessageId + 1,
+              role: "system" as const,
+              text: lastSystemMessageText,
+            },
+          ]
+        : []),
+    ];
+
+    setMessages([
+      ...messagesPlusLastSystemMessage,
+      {
+        id: lastMessageId + (lastSystemMessageText !== undefined ? 2 : 1),
+        role: "user",
+        text: prompt,
+      },
+    ]);
     setLastSystemMessageText(undefined);
     setIsStreaming(true);
 
     try {
       const streamingResponse = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          messages: messagesPlusLastSystemMessage,
+          prompt,
+        }),
       });
 
       if (!streamingResponse.body) {
