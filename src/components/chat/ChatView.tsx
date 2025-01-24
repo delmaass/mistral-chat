@@ -6,17 +6,21 @@ import MessagesView from "./MessagesView";
 import useChat from "@/hooks/useChat";
 
 export default function ChatView() {
-  const { messages } = useChat();
+  const { messages, chatAsync, isStreaming, lastSystemMessageText } = useChat();
 
   return (
     <div className="flex flex-col flex-1 gap-4">
       {messages.length ? (
-        <MessagesView messages={messages} />
+        <MessagesView
+          messages={messages}
+          isStreaming={isStreaming}
+          lastSystemMessageText={lastSystemMessageText || ""}
+        />
       ) : (
         <ExamplesView />
       )}
 
-      <InputForm />
+      <InputForm onSubmit={chatAsync} />
     </div>
   );
 }

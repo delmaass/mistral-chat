@@ -1,10 +1,18 @@
 "use server";
 
 import { Mistral } from "@mistralai/mistralai";
+import * as z from "zod";
 
-export async function chat(prompt: string) {
-  if (!prompt) {
-    throw new Error("You must provide a prompt to continue");
+const schema = z.object({ prompt: z.string().nonempty() }).required();
+
+export async function POST(request: Request) {
+  const requestBody = await request.json();
+  const validatedFields = schema.safeParse(requestBody);
+
+  if (!validatedFields.success) {
+    throw new Error(
+      `Error parsing request body: ${validatedFields.error.message}`,
+    );
   }
 
   const apiKey = process.env.MISTRAL_API_KEY;
@@ -22,13 +30,11 @@ export async function chat(prompt: string) {
       try {
         const result = await client.chat.stream({
           model: "mistral-small-latest",
-          messages: [{ role: "user", content: prompt }],
+          messages: [{ role: "user", content: validatedFields.data.prompt }],
         });
 
         for await (const chunk of result) {
           const streamText = chunk.data.choices[0].delta.content as string;
-
-          console.log(streamText);
 
           controller.enqueue(new TextEncoder().encode(streamText));
         }
