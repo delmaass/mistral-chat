@@ -20,10 +20,23 @@ export default function SystemMessageBubble({
       </div>
 
       <div className="font-medium pt-3 flex-1">
-        <Markdown className="prose max-w-none">{text}</Markdown>
-        {isStreaming && (
-          <span className="bg-onbase-primary size-4 rounded-full align-middle -translate-y-[0.5px] inline-block" />
-        )}
+        <Markdown
+          className="prose max-w-none"
+          components={{
+            a: ({ children, href }) => {
+              // This is a hacky way to render the streaming indicator circle next to the last word
+              if (href === "streaming") {
+                return (
+                  <span className="bg-onbase-primary size-4 rounded-full align-middle -translate-y-[0.5px] inline-block" />
+                );
+              }
+
+              return <a href={href}>{children}</a>;
+            },
+          }}
+        >
+          {isStreaming ? `${text}[](streaming)` : text}
+        </Markdown>
       </div>
     </div>
   );
